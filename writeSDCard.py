@@ -1,5 +1,5 @@
-import os
-import json,random,hashlib
+import os,hashlib
+import json
 from datetime import datetime
 import time
 
@@ -36,14 +36,10 @@ ALPHABETS = [
 BASE = len(ALPHABETS[0])
 MAX_COMBINATION = BASE**6
 
-def getSerial(n=12):
-    "generate a random serial number."
-    serial = [str(random.randint(0,9)) for i in range(n)]
-    return "".join(serial)
 
 def getSeed(serial:str=''):
     "generate a int seed from serial number"
-    serial = serial or getSerial()
+    serial = serial
     h = hashlib.md5(serial.encode())
     return int(h.hexdigest(),16)
 
@@ -115,11 +111,12 @@ def waitUntilChipRemoved(r):
     print('='*50)
 
 def main():
+    print("+"*25+'SD card flush utility'+'+'*25)
     print('Started SD card writing script.')
-    mode = input('Enter n if need to generate 1 code and exit\n')
-    if mode == 'n':
-        writeToSDCard('./device_id.json')
-        return 
+    # mode = input('Enter n if need to generate 1 code and exit\n')
+    # if mode == 'n':
+    #     writeToSDCard('./device_id.json')
+    #     return 
     print('Start Auto Device ID writing. Insert SD card to begin.')
     while True:
         try:

@@ -29,3 +29,4 @@
 20210726 12:49:08 - write to D:/device_id.json: AMS-AAU, serial: 000005800100
 20210726 12:49:38 - write to D:/device_id.json: AMS-AAV, serial: 000005800101
 20210726 12:50:11 - write to D:/device_id.json: AMS-AAW, serial: 000005800102
+20210809 15:49:29 - write to D:/device_id.json: AMS-AAX, serial: 000005800103
