@@ -5,7 +5,7 @@ import time
 
 # Hui Kang
 # for write the device_id.json to /boot on a SD card automatically.
-# this script will update the setup/files/serialSeed.txt
+# this script will update the ./files/serialSeed.txt
 # How to use the script works:
 # in the setup folder, run 
 # python writeSDCard.py
@@ -25,16 +25,11 @@ import time
 
 
 
-ALPHABETS = [
-'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-'ABCDEFGHIJKLMNOPQRSTUVWXYZ',
-'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
-]
-BASE = len(ALPHABETS[0])
+ALPHABETS = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'
+BASE = len(ALPHABETS)
 MAX_COMBINATION = BASE**6
+SEED_FILE = './records/serialSeed.txt' # file to store counter
+WRITE_RECORD = "./records/writerecord.txt" # write record history
 
 
 def getSeed(serial:str=''):
@@ -42,10 +37,7 @@ def getSeed(serial:str=''):
     serial = serial
     h = hashlib.md5(serial.encode())
     return int(h.hexdigest(),16)
-
-def checkAlphabets():
-    for i in ALPHABETS:
-        print(len(set(i)))
+ 
 
 def convert(o,base=BASE):
     "convert a integer to base N, return a list from most to least significant bit"
@@ -56,23 +48,33 @@ def convert(o,base=BASE):
         o = o//base    
     return c[::-1]
 
-
+def convertR(s,base=BASE):
+    "convert an AMS-ABC string to serial number"
+    d = 0
+    ser = 0
+    for i in s[::-1]:
+        if i in ALPHABETS:
+            ser += ALPHABETS.index(i) * (BASE ** d)
+            d += 1
+    return ser
+            
 def idFormat(c):
-    "convert a list of integer to use id format"    
+    "convert a list of integer to AMS-ABC format"    
     c = [0]*(6-len(c)) + c
     d = []
     for i,j in enumerate(c):
-        d.append(ALPHABETS[i][j])
+        d.append(ALPHABETS[j])
     return ''.join(d[0:3])+'-'+''.join(d[3:])
 
 def getIDfromSerial(serial):
+    "convert an serial number string to AMS-ABC ID"
     return idFormat(convert(int(serial) % MAX_COMBINATION ))
 
 def getNextDeviceID():
-    "return a new "
-    seedfile = './files/serialSeed.txt'
-    with open(seedfile,'rt') as f:
-        counter = int(f.read().strip())
+    "return a new device ID"    
+    with open(SEED_FILE,'rt') as f:
+        id = f.read().strip()
+    counter = convertR(id)
     serialNo = f"{counter:012}"
     seed = getSeed(serialNo)
     id = getIDfromSerial(serialNo)
@@ -81,16 +83,24 @@ def getNextDeviceID():
     "SYSTEM_SEED": seed,
     "SYSTEM_ID": id,
     "SYSTEM_ID_LONG": id
-    }
-    with open(seedfile,'wt') as f:
-        f.write(str(counter+1))
+    }    
     return device
+    
+def increaseDeviceID(increment=1):
+    with open(SEED_FILE,'rt') as f:
+        id = f.read().strip()
+    counter = convertR(id)
+    id = getIDfromSerial(counter+1)
+    with open(SEED_FILE,'wt') as f:
+        f.write(id)
     
 
 def sdCardInserted():
+    "check if a microSD card that have all the image file has been plugged in."
     root = 'CDEFGHIJKLMNOPQRST'
-    for r in root:
-        if os.path.exists(f"{r}:/config.txt"):            
+    files = ["kernel.img","config.txt","cmdline.txt"]
+    for r in root:        
+        if all([ os.path.exists(f"{r}:/{file}") for file in files]) :   
             return r
     return False
     
@@ -99,7 +109,8 @@ def writeToSDCard(file):
     with open(file,'wt') as f:
         json.dump(device,f,indent=2)
     result = f'{datetime.now().strftime("%Y%m%d %H:%M:%S")} - write to {file}: {device["SYSTEM_ID"]}, serial: {device["SYSTEM_SERIAL"]}\n'
-    with open("./files/writerecord.txt",'a') as f:
+    increaseDeviceID()
+    with open(WRITE_RECORD,'a') as f:
         f.write(result)
     print(result)
 
@@ -128,7 +139,9 @@ def main():
                     with open(f"{r}:/device_id.json",'rt') as f:
                         existing = json.load(f)
                         print(f'Existing Device ID: {existing.get("SYSTEM_ID")}.')
-                    overwrite = input('Overwrite Device ID? (y/n)')
+                    overwrite = ""
+                    while overwrite not in ['y','n']:
+                        overwrite = input('Overwrite Device ID? (Enter y/n)').strip().lower()
                     if overwrite.lower() == 'y':
                         writeToSDCard(f"{r}:/device_id.json")
                     else:

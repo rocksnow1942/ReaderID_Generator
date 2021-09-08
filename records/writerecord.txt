@@ -48,3 +48,10 @@
 20210908 14:04:16 - write to E:/device_id.json: AMS-ABN, serial: 000005800119
 20210908 14:04:55 - write to E:/device_id.json: AMS-ABO, serial: 000005800120
 20210908 14:05:36 - write to E:/device_id.json: AMS-ABP, serial: 000005800121
+20210908 15:07:27 - write to H:/device_id.json: AMS-ABQ, serial: 000005800122
+20210908 15:08:27 - write to E:/device_id.json: AMS-ABR, serial: 000005800123
+20210908 15:19:36 - write to E:/device_id.json: AMS-ABQ, serial: 000005800122
+20210908 15:21:23 - write to E:/device_id.json: AMS-ABQ, serial: 000005800122
+20210908 15:25:02 - write to E:/device_id.json: AMS-ABQ, serial: 000005800122
+20210908 15:36:52 - write to E:/device_id.json: AMS-ABR, serial: 000005800123
+20210908 15:38:24 - write to E:/device_id.json: AMS-ABQ, serial: 000005800122
