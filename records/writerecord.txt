@@ -1,0 +1,4 @@
+20210910 10:37:15 | WriteTo E:/device_id.json | ID: AMS-ABS | SN: 000005800124
+20210910 10:38:04 | WriteTo E:/device_id.json | ID: AMS-ABT | SN: 000005800125
+20210910 10:38:12 | WriteTo E:/device_id.json | ID: AMS-ABU | SN: 000005800126
+20210910 10:38:20 | WriteTo E:/device_id.json | ID: AMS-ABV | SN: 000005800127
