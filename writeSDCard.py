@@ -108,7 +108,7 @@ def writeToSDCard(file):
     device = getNextDeviceID()
     with open(file,'wt') as f:
         json.dump(device,f,indent=2)
-    result = f'{datetime.now().strftime("%Y%m%d %H:%M:%S")} - write to {file}: {device["SYSTEM_ID"]}, serial: {device["SYSTEM_SERIAL"]}\n'
+    result = f'{datetime.now().strftime("%Y%m%d %H:%M:%S")} | WriteTo {file} | ID: {device["SYSTEM_ID"]} | SN: {device["SYSTEM_SERIAL"]}\n'
     increaseDeviceID()
     with open(WRITE_RECORD,'a') as f:
         f.write(result)
